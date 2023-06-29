@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "nonebot_plugin_poke"
 version = "0.0.1"
-description = "L4D2 server related operations plugin for NoneBot2"
+description = "nonebot_plugin_poke plugin for NoneBot2"
 authors = ["Agnes_Digital <Z735803792@163.com>"]
-license = "GPLv3"
+license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/Agnes4m/nonebot_plugin_poke"
 repository = "https://github.com/Agnes4m/nonebot_plugin_poke"
