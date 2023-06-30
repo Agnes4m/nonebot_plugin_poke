@@ -1,13 +1,13 @@
 from pathlib import Path
-from typing import Optional, Sequence,List
+from typing import List
 
 from nonebot import get_driver
 from nonebot.log import logger
-from pydantic import BaseSettings, validator,Field
+from pydantic import BaseSettings
 
 
 class Config(BaseSettings):
-    bot_nickname: str = list[get_driver().config.nickname][0]
+    bot_nickname: str = '宁宁'
     poke_black: bool = True
     poke_ban_group:List[str] = []
     poke_allow_group:List[str] = []
@@ -16,6 +16,8 @@ class Config(BaseSettings):
     poke_send_text: bool = False
     poke_send_acc: bool = False
     poke_path:Path = Path('data/poke')
+    poke_priority:int = 1
+    poke_block:bool = True
 
 
     class Config:

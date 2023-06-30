@@ -27,10 +27,74 @@ _✨Nonebot & 戳戳✨_
 
 </div>
 
+## 安装
+
+方法一：
+
+        nb plugin install nonebot_plugin_poke
+
+方法二：
+
+        pip install nonebot_plugin_poke
+
+再手动添加`nonebot_plugin_poke`到bot文件下`pyproject.toml`文件中
+
+## env配置项:
+
+    # 在完全不写的情况下，效果是戳戳后反戳戳
+    # 机器人名称
+    bot_nickname: str = '宁宁'
+    # 是否回复图片
+    poke_send_pic: bool = False
+    # 是否回复戳戳
+    poke_send_poke: bool = True
+    # 是否回复文字
+    poke_send_text: bool = False
+    # 是否回复音频
+    poke_send_acc: bool = False
+
+如果不知道以下配置，默认就可以，只修改上面部分
+
+    # poke文件夹位置
+    poke_path:Path = Path('data/poke')
+    # 是否开启黑名单模式（否则是白名单）
+    poke_black: bool = True
+    # 黑名单屏蔽群组
+    poke_ban_group:List[str] = []
+    # 白名单允许群组
+    poke_allow_group:List[str] = []
+    # 戳戳优先级
+    poke_priority:int = 1
+    # 是否阻断其他指令
+    poke_block:bool = True
+
 ## 指令
 
-无
+群里双击bot头像，会依次按照配置文件，逐步检查回复
 
-## 内容
+## 数据结构
 
-未完成
+```txt
+举例：
+└── data
+    └── poke
+        ├── poke.txt        # 回复文字
+        ├── pic             # 回复图片
+            ├── 1.png
+            ├── 2.jpg
+            ├── 3.jpeg
+            └── ...
+        └── acc             # 回复音频
+            ├── 1.acc
+            ├── 2.mp3
+            └── ...
+...
+```
+
+## 其他
+
+如果发不出语音，请手动安装ffmpeg
+
+## 参考
+
+- [智障回复](https://github.com/Special-Week/nonebot_plugin_smart_reply) - 配置写法

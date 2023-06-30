@@ -1,19 +1,20 @@
 [tool.poetry]
 name = "nonebot_plugin_poke"
 version = "0.0.1"
-description = "nonebot_plugin_poke plugin for NoneBot2"
+description = "群聊戳戳事件 plugin for NoneBot2"
 authors = ["Agnes_Digital <Z735803792@163.com>"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/Agnes4m/nonebot_plugin_poke"
 repository = "https://github.com/Agnes4m/nonebot_plugin_poke"
-keywords = ["steam", "game", "l4d2", "nonebot2", "plugin"]
+keywords = ["nonebot2", "plugin","event"]
 classifiers = [
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
 ]
 include = [
