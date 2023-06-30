@@ -43,7 +43,7 @@ logo ="""
     OOooo^..`./oOO@/ =^\/^.^\\....=]......,/@@^O^*O.... .,][],OO\....\`.
     @Oooo\/]OOOOOO/  .  \.=^....,..........[.,OO^=^.    /    ,`\OO`.....
     """
-__version__ = "0.0.2"
+__version__ = "0.0.5"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description='自定义戳一戳事件',

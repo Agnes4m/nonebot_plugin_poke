@@ -24,7 +24,11 @@ async def acc_send(matcher:Matcher):
     
 async def poke_send(event:PokeNotifyEvent,matcher:Matcher):
     if config.poke_send_poke:
-        await matcher.send(Message(f"[CQ:poke,qq={event.user_id}]"))
+        await matcher.send(Message([
+        MessageSegment("poke",  {
+           "qq": f"{event.user_id}"
+       })
+    ]))
     else:
         return
     
@@ -80,7 +84,7 @@ async def pic_text_send(event:PokeNotifyEvent,matcher:Matcher):
 
 async def poke_rule(event:PokeNotifyEvent):
     """黑白名单判断"""
-    if isinstance(event,PokeNotifyEvent):
+    if isinstance(event,PokeNotifyEvent) and event.target_id == event.self_id:
         group = event.group_id
         if config.poke_black:
             if group in config.poke_ban_group:
