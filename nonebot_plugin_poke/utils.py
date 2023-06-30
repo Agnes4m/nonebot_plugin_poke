@@ -80,14 +80,17 @@ async def pic_text_send(event:PokeNotifyEvent,matcher:Matcher):
 
 async def poke_rule(event:PokeNotifyEvent):
     """黑白名单判断"""
-    group = event.group_id
-    if config.poke_black:
-        if group in config.poke_ban_group:
-            return False
+    if isinstance(event,PokeNotifyEvent):
+        group = event.group_id
+        if config.poke_black:
+            if group in config.poke_ban_group:
+                return False
+            else:
+                return True
         else:
-            return True
+            if group in config.poke_allow_group:
+                return True
+            else:
+                return False
     else:
-        if group in config.poke_allow_group:
-            return True
-        else:
-            return False        
+        return False
