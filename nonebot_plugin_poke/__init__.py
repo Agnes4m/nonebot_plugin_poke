@@ -58,7 +58,7 @@ __plugin_meta__ = PluginMetadata(
 )
 
 poke_ = on_notice(block=config.poke_block, 
-                  priority=config.poke_priority, rlue=poke_rule)
+                  priority=config.poke_priority, rule=poke_rule)
 
 
 
