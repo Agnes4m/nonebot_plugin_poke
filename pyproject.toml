@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_poke"
-version = "0.0.5"
+version = "0.0.6"
 description = "群聊戳戳事件 plugin for NoneBot2"
 authors = ["Agnes_Digital <Z735803792@163.com>"]
 license = "MIT"

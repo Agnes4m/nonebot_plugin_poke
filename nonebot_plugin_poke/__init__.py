@@ -4,7 +4,10 @@ from nonebot.rule import to_me
 from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 from nonebot.plugin.on import  on_notice,on_command
-from nonebot.adapters.onebot.v11 import PokeNotifyEvent,MessageSegment, Message,GroupMessageEvent
+from nonebot.adapters.onebot.v11 import PokeNotifyEvent,MessageEvent
+
+import datetime
+import imghdr
 
 from .utils import *
 
@@ -43,7 +46,7 @@ logo ="""
     OOooo^..`./oOO@/ =^\/^.^\\....=]......,/@@^O^*O.... .,][],OO\....\`.
     @Oooo\/]OOOOOO/  .  \.=^....,..........[.,OO^=^.    /    ,`\OO`.....
     """
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description='自定义戳一戳事件',
@@ -61,10 +64,53 @@ poke_ = on_notice(block=config.poke_block,
                   priority=config.poke_priority, rule=poke_rule)
 
 
-
 @poke_.handle()
 async def _(event: PokeNotifyEvent,matcher:Matcher):
     await poke_send(event,matcher)
     await acc_send(matcher)
     await pic_text_send(event,matcher)
     
+
+add_pic = on_command('zq',aliases={'抓图'},priority=30)
+@add_pic.handle()
+async def _(event:MessageEvent,matcher:Matcher):
+    images: List[bytes] = []
+    images_name: List[str] = []
+
+    success: int = 0
+    fail: int = 0
+    if event.reply:
+        for pic in event.reply.message['image']:
+            try:
+                _img = await get_data(str(pic.data.get("url", "")))
+                success += 1
+                images.append(_img)
+            except:
+                fail += 1
+                
+            msg: Message = event.dict()["message"]
+            for msg_seg in msg:
+                if msg_seg.type == "image":
+                    try:
+                        _img = await get_data(str(msg_seg.data.get("url", "")))
+                        success += 1
+                        images.append(_img)
+                    except:
+                        fail += 1
+
+            
+            base = 0
+            while len(images_name) < len(images):
+                images_name.append(str(int(datetime.now().timestamp())+base))
+                base += 1
+            images_name = images_name[:len(images)]
+            images_name = [f"{img_name}.{imghdr.what(None, h=images[i])}" for i,img_name in enumerate(images_name)]
+
+            path = config.poke_path.joinpath('pic')
+            for i,img in enumerate(images):
+                img_path = path / images_name[i]
+                with img_path.open("wb+") as f:
+                    f.write(img)
+
+            tosend = f"添加完成，成功{success}张，失败{fail}张，可用于戳戳随机图"
+            await matcher.send(event=event,message=tosend,at_sender=True)

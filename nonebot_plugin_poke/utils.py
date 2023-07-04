@@ -2,11 +2,25 @@ from nonebot.matcher import Matcher
 from nonebot.adapters.onebot.v11 import PokeNotifyEvent,MessageSegment, Message
 
 import random
+import aiohttp
 from typing import List
+from pathlib import Path
 
 from .config import config
 
-
+async def get_data(url:str):
+    """获取url内容"""
+    headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0'
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, timeout=600) as response:
+            if response.status == 200:
+                return await response.read()
+            else:
+                return None
+            
+            
 async def acc_send(matcher:Matcher):
     """音乐部分"""
     if not config.poke_send_acc:
@@ -98,3 +112,9 @@ async def poke_rule(event:PokeNotifyEvent):
                 return False
     else:
         return False
+
+
+async def add_pic():
+    pic_file_path = config.poke_path.joinpath('pic')
+    pic_file_path.mkdir(parents=True, exist_ok=True)
+    
