@@ -6,10 +6,11 @@ from nonebot.plugin import PluginMetadata
 from nonebot.plugin.on import  on_notice,on_command
 from nonebot.adapters.onebot.v11 import PokeNotifyEvent,MessageEvent
 
-import datetime
+from datetime import datetime
 import imghdr
 
 from .utils import *
+from .matcher import *
 
 logo ="""
     ......                  ` .]]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OO^       
@@ -46,10 +47,10 @@ logo ="""
     OOooo^..`./oOO@/ =^\/^.^\\....=]......,/@@^O^*O.... .,][],OO\....\`.
     @Oooo\/]OOOOOO/  .  \.=^....,..........[.,OO^=^.    /    ,`\OO`.....
     """
-__version__ = "0.0.6"
+__version__ = "0.1.0"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
-    description='自定义戳一戳事件',
+    description='自定义群聊戳一戳事件',
     usage=logo,
     type="application",
     homepage="https://github.com/Agnes4m/nonebot_plugin_poke",
@@ -66,9 +67,7 @@ poke_ = on_notice(block=config.poke_block,
 
 @poke_.handle()
 async def _(event: PokeNotifyEvent,matcher:Matcher):
-    await poke_send(event,matcher)
-    await acc_send(matcher)
-    await pic_text_send(event,matcher)
+    await poke_reply(event,matcher)
     
 
 add_pic = on_command('zq',aliases={'抓图'},priority=30)
@@ -113,4 +112,4 @@ async def _(event:MessageEvent,matcher:Matcher):
                     f.write(img)
 
             tosend = f"添加完成，成功{success}张，失败{fail}张，可用于戳戳随机图"
-            await matcher.send(event=event,message=tosend,at_sender=True)
+            await matcher.send(message=tosend,at_sender=True)

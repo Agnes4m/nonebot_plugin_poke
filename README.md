@@ -8,7 +8,7 @@
 
 # nonebot_plugin_poke
 
-_✨Nonebot & 戳戳✨_
+_✨Nonebot & 自定义戳戳群聊事件✨_
 
 <a href="https://github.com/Agnes4m/nonebot_plugin_poke/stargazers">
         <img alt="GitHub stars" src="https://img.shields.io/github/stars/Agnes4m/nonebot_plugin_poke" alt="stars">
@@ -74,6 +74,7 @@ _✨Nonebot & 戳戳✨_
 
 ## 数据结构
 
+
 ```txt
 举例：
 └── data
@@ -93,7 +94,8 @@ _✨Nonebot & 戳戳✨_
 
 ## 其他
 
-如果发不出语音，请手动安装ffmpeg
+- 如果发不出语音，请手动安装ffmpeg
+- 当语音，与图或文都为True的时候，则随机发送一种，防止刷屏刷到风控
 
 ## 参考
 
