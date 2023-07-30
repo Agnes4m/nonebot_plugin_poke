@@ -1,18 +1,17 @@
-from nonebot import on_command
-from nonebot.params import CommandArg
-from nonebot.rule import to_me
+import imghdr
+from datetime import datetime
+from typing import List
+
+from nonebot.adapters import Message
+from nonebot.adapters.onebot.v11 import MessageEvent, PokeNotifyEvent
 from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
-from nonebot.plugin.on import  on_notice,on_command
-from nonebot.adapters.onebot.v11 import PokeNotifyEvent,MessageEvent
+from nonebot.plugin.on import on_command, on_notice
 
-from datetime import datetime
-import imghdr
+from .matcher import poke_reply
+from .utils import config, get_data, poke_rule
 
-from .utils import *
-from .matcher import *
-
-logo ="""
+logo = """
     ......                  ` .]]@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OO^       
     ......                ,/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OO^       
     ......            /O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@OO^       
@@ -50,7 +49,7 @@ logo ="""
 __version__ = "0.1.0"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
-    description='自定义群聊戳一戳事件',
+    description="自定义群聊戳一戳事件",
     usage=logo,
     type="application",
     homepage="https://github.com/Agnes4m/nonebot_plugin_poke",
@@ -61,55 +60,62 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 
-poke_ = on_notice(block=config.poke_block, 
-                  priority=config.poke_priority, rule=poke_rule)
+poke_ = on_notice(block=config.poke_block, priority=config.poke_priority, rule=poke_rule)
 
 
 @poke_.handle()
-async def _(event: PokeNotifyEvent,matcher:Matcher):
-    await poke_reply(event,matcher)
-    
+async def _(event: PokeNotifyEvent, matcher: Matcher):
+    await poke_reply(event, matcher)
 
-add_pic = on_command('zq',aliases={'抓图'},priority=30)
+
+add_pic = on_command("zq", aliases={"抓图"}, priority=30)
+
+
 @add_pic.handle()
-async def _(event:MessageEvent,matcher:Matcher):
+async def _(event: MessageEvent, matcher: Matcher):
     images: List[bytes] = []
     images_name: List[str] = []
 
     success: int = 0
     fail: int = 0
     if event.reply:
-        for pic in event.reply.message['image']:
+        for pic in event.reply.message["image"]:
             try:
                 _img = await get_data(str(pic.data.get("url", "")))
+                if not _img:
+                    return
                 success += 1
                 images.append(_img)
-            except:
+            except Exception:
                 fail += 1
-                
+
             msg: Message = event.dict()["message"]
             for msg_seg in msg:
                 if msg_seg.type == "image":
                     try:
                         _img = await get_data(str(msg_seg.data.get("url", "")))
                         success += 1
+                        if not _img:
+                            return
                         images.append(_img)
-                    except:
+                    except Exception:
                         fail += 1
 
-            
             base = 0
             while len(images_name) < len(images):
-                images_name.append(str(int(datetime.now().timestamp())+base))
+                images_name.append(str(int(datetime.now().timestamp()) + base))
                 base += 1
-            images_name = images_name[:len(images)]
-            images_name = [f"{img_name}.{imghdr.what(None, h=images[i])}" for i,img_name in enumerate(images_name)]
+            images_name = images_name[: len(images)]
+            images_name = [
+                f"{img_name}.{imghdr.what(None, h=images[i])}"
+                for i, img_name in enumerate(images_name)
+            ]
 
-            path = config.poke_path.joinpath('pic')
-            for i,img in enumerate(images):
+            path = config.poke_path.joinpath("pic")
+            for i, img in enumerate(images):
                 img_path = path / images_name[i]
                 with img_path.open("wb+") as f:
                     f.write(img)
 
             tosend = f"添加完成，成功{success}张，失败{fail}张，可用于戳戳随机图"
-            await matcher.send(message=tosend,at_sender=True)
+            await matcher.send(message=tosend, at_sender=True)
