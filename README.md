@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD026 MD031 MD033 MD036 MD041 MD046 -->
 <div align="center">
   <img src="https://raw.githubusercontent.com/Agnes4m/nonebot_plugin_l4d2_server/main/image/logo.png" width="180" height="180"  alt="AgnesDigitalLogo">
   <br>
@@ -36,6 +37,7 @@ _✨Nonebot & 自定义戳戳群聊事件✨_
 方法二：
 
         pip install nonebot_plugin_poke
+        poetry add nonebot-plugin-pjsk
 
 再手动添加`nonebot_plugin_poke`到bot文件下`pyproject.toml`文件中
 
@@ -74,7 +76,6 @@ _✨Nonebot & 自定义戳戳群聊事件✨_
 
 ## 数据结构
 
-
 ```txt
 举例：
 └── data
@@ -99,4 +100,4 @@ _✨Nonebot & 自定义戳戳群聊事件✨_
 
 ## 参考
 
-- [智障回复](https://github.com/Special-Week/nonebot_plugin_smart_reply) - 配置写法
+- [智障回复](https://github.com/Special-Week/nonebot_plugin_smart_reply)
