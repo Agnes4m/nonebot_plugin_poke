@@ -33,6 +33,7 @@ async def acc_send(matcher: Matcher):
         if acc_file.is_file() and acc_file.suffix.lower() in [".wav", ".mp3", ".acc"]:
             acc_file_list.append(acc_file)
     send_acc = random.choice(acc_file_list)
+    print(f"选择{send_acc}")
     await matcher.send(MessageSegment.record(file=f"file:///{send_acc.resolve()}"))
 
 

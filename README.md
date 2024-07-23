@@ -7,7 +7,7 @@
 
 <div align="center">
 
-# nonebot_plugin_poke
+# nonebot_plugin_poke（仅支持onebotv11）
 
 _✨Nonebot & 自定义戳戳群聊事件✨_
 
@@ -28,17 +28,30 @@ _✨Nonebot & 自定义戳戳群聊事件✨_
 
 </div>
 
+
+## 注意事项
+
+**如果使用napcat，请将版本更新到1.6.6或者以上，否则这个功能用不了**
+
+
+
 ## 安装
 
-方法一：
-
-        nb plugin install nonebot_plugin_poke
+方法一 （推荐）：
+```bash
+nb plugin install nonebot_plugin_poke
+```
 
 方法二：
+```bash
+poetry add nonebot_plugin_poke
+pdm add nonebot_plugin_poke
+```
 
-        pip install nonebot_plugin_poke
-        poetry add nonebot-plugin-pjsk
-
+方法三：
+```bash
+pip install nonebot_plugin_poke
+```
 再手动添加`nonebot_plugin_poke`到bot文件下`pyproject.toml`文件中
 
 ## env配置项:

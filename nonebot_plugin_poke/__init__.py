@@ -4,6 +4,7 @@ from typing import List
 
 from nonebot.adapters import Message
 from nonebot.adapters.onebot.v11 import MessageEvent, PokeNotifyEvent
+from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 from nonebot.plugin.on import on_command, on_notice
@@ -11,7 +12,7 @@ from nonebot.plugin.on import on_command, on_notice
 from .matcher import poke_reply
 from .utils import config, get_data, poke_rule
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description="自定义群聊戳一戳事件",
@@ -25,11 +26,13 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 
+
 poke_ = on_notice(block=config.poke_block, priority=config.poke_priority, rule=poke_rule)
 
 
 @poke_.handle()
 async def _(event: PokeNotifyEvent, matcher: Matcher):
+    logger.info("戳戳触发")
     await poke_reply(event, matcher)
 
 
