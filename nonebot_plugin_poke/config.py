@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import List
 
-from nonebot import get_driver
+from nonebot import get_driver, get_plugin_config
 from pydantic import BaseSettings
 
 
-class Config(BaseSettings):
+class ConfigModel(BaseSettings):
     bot_nickname: str = "宁宁"
     poke_black: bool = True
     poke_ban_group: List[str] = []
@@ -22,8 +22,5 @@ class Config(BaseSettings):
         extra = "ignore"
 
 
-config = Config.parse_obj(get_driver().config)
 
-
-if not config.poke_path.exists() or not config.poke_path.is_dir():
-    config.poke_path.mkdir(0o755, parents=True, exist_ok=True)
+config = get_plugin_config(ConfigModel)
