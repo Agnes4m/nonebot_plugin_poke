@@ -79,13 +79,15 @@ async def text_send():
         ) as f:
             text_file_list: List[str] = (await f.read()).split("\n")
             send_text = random.choice(text_file_list)
+            await f.write("\n".join(text_file_list))
+            send_text = random.choice(text_file_list)
     else:
         async with aiofiles.open(
             pic_file_path.joinpath("poke.txt"),
             mode="w",
             encoding="utf-8",
         ) as f:
-            text_file_list: List[str] = [
+            text_file_list2: List[str] = [
                 "lsp你再戳？",
                 "连个可爱美少女都要戳的肥宅真恶心啊。",
                 "你再戳！",
@@ -108,8 +110,8 @@ async def text_send():
                 "啊呜，太舒服刚刚竟然睡着了。什么事？",
                 "正在定位您的真实地址...定位成功。轰炸机已起飞",
             ]
-            await f.write("\n".join(text_file_list))
-            send_text = random.choice(text_file_list)
+            await f.write("\n".join(text_file_list2))
+            send_text = random.choice(text_file_list2)
     send_text.replace("我", config.bot_nickname)
     return send_text
 

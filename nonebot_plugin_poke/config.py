@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from nonebot import get_driver, get_plugin_config
+from nonebot import get_plugin_config
 from pydantic import BaseSettings
 
 
@@ -17,10 +17,6 @@ class ConfigModel(BaseSettings):
     poke_path: Path = Path("data/poke")
     poke_priority: int = 1
     poke_block: bool = True
-
-    class Config:
-        extra = "ignore"
-
 
 
 config = get_plugin_config(ConfigModel)
