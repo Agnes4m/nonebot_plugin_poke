@@ -71,49 +71,67 @@ async def pic_send():
 async def text_send():
     logger.success("发送文字")
     pic_file_path = config.poke_path
-    if pic_file_path.joinpath("poke.txt").is_file():
-        async with aiofiles.open(
-            pic_file_path.joinpath("poke.txt"),
-            mode="r",
-            encoding="utf-8",
-        ) as f:
-            text_file_list: List[str] = (await f.read()).split("\n")
-            send_text = random.choice(text_file_list)
-            await f.write("\n".join(text_file_list))
-            send_text = random.choice(text_file_list)
-    else:
-        async with aiofiles.open(
-            pic_file_path.joinpath("poke.txt"),
-            mode="w",
-            encoding="utf-8",
-        ) as f:
-            text_file_list2: List[str] = [
-                "lsp你再戳？",
-                "连个可爱美少女都要戳的肥宅真恶心啊。",
-                "你再戳！",
-                "？再戳试试？",
-                "别戳了别戳了再戳就坏了555",
-                "我爪巴爪巴，球球别再戳了",
-                "你戳你🐎呢？！",
-                "请不要戳我 >_<",
-                "放手啦，不给戳QAQ",
-                "喂(#`O′) 戳我干嘛！",
-                "戳坏了，赔钱！",
-                "戳坏了",
-                "嗯……不可以……啦……不要乱戳",
-                "那...那里...那里不能戳...绝对...",
-                "(。´・ω・)ん?",
-                "有事恁叫我，别天天一个劲戳戳戳！",
-                "欸很烦欸！你戳🔨呢",
-                "再戳一下试试？",
-                "正在关闭对您的所有服务...关闭成功",
-                "啊呜，太舒服刚刚竟然睡着了。什么事？",
-                "正在定位您的真实地址...定位成功。轰炸机已起飞",
-            ]
-            await f.write("\n".join(text_file_list2))
-            send_text = random.choice(text_file_list2)
-    send_text.replace("我", config.bot_nickname)
-    return send_text
+
+    async def _get_random_text() -> str:
+        """
+        获取随机文本行
+        从poke.txt文件中随机选择一行文本，如果文件不存在则创建并初始化默认文本
+        参数：无
+        返回：随机选择的文本行（字符串）
+        """
+        if pic_file_path.joinpath("poke.txt").is_file():
+            async with aiofiles.open(
+                pic_file_path.joinpath("poke.txt"),
+                mode="r",
+                encoding="utf-8",
+            ) as f:
+                text_file_list: List[str] = (await f.read()).split("\n")
+                send_text = random.choice(text_file_list)
+        else:
+            async with aiofiles.open(
+                pic_file_path.joinpath("poke.txt"),
+                mode="w",
+                encoding="utf-8",
+            ) as f:
+                text_file_list2: List[str] = [
+                    "lsp你再戳？",
+                    "连个可爱美少女都要戳的肥宅真恶心啊。",
+                    "你再戳！",
+                    "？再戳试试？",
+                    "别戳了别戳了再戳就坏了555",
+                    "我爪巴爪巴，球球别再戳了",
+                    "你戳你🐎呢？！",
+                    "请不要戳我 >_<",
+                    "放手啦，不给戳QAQ",
+                    "喂(#`O′) 戳我干嘛！",
+                    "戳坏了，赔钱！",
+                    "戳坏了",
+                    "嗯……不可以……啦……不要乱戳",
+                    "那...那里...那里不能戳...绝对...",
+                    "(。´・ω・)ん?",
+                    "有事恁叫我，别天天一个劲戳戳戳！",
+                    "欸很烦欸！你戳🔨呢",
+                    "再戳一下试试？",
+                    "正在关闭对您的所有服务...关闭成功",
+                    "啊呜，太舒服刚刚竟然睡着了。什么事？",
+                    "正在定位您的真实地址...定位成功。轰炸机已起飞",
+                ]
+                await f.write("\n".join(text_file_list2))
+                send_text = random.choice(text_file_list2)
+        return send_text
+
+    def _replace_pronoun(text: str) -> str:
+        """
+        替换文本中的代词
+        将文本中的"我"替换为机器人昵称
+        参数：
+            text: 待处理的原始文本
+        返回：处理后的文本
+        """
+        return text.replace("我", config.bot_nickname)
+
+    send_text = await _get_random_text()
+    return _replace_pronoun(send_text)
 
 
 async def pic_or_text(

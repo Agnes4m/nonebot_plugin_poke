@@ -18,5 +18,8 @@ class ConfigModel(BaseModel):
     poke_priority: int = 1
     poke_block: bool = True
 
+    class Config:
+        extra = "ignore"
+
 
 config = get_plugin_config(ConfigModel)
