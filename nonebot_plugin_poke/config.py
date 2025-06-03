@@ -2,10 +2,10 @@ from pathlib import Path
 from typing import List
 
 from nonebot import get_plugin_config
-from pydantic import BaseSettings
+from pydantic import BaseModel
 
 
-class ConfigModel(BaseSettings):
+class ConfigModel(BaseModel):
     bot_nickname: str = "宁宁"
     poke_black: bool = True
     poke_ban_group: List[str] = []

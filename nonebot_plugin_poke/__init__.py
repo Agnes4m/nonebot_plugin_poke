@@ -12,7 +12,7 @@ from nonebot.plugin.on import on_command, on_notice
 from .matcher import poke_reply
 from .utils import config, get_data, poke_rule
 
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description="自定义群聊戳一戳事件",
@@ -46,16 +46,26 @@ async def _(event: MessageEvent, matcher: Matcher):
 
     success: int = 0
     fail: int = 0
+
+    # 处理回复消息中的图片
     if event.reply:
         for pic in event.reply.message["image"]:
+            _img = None
             try:
                 _img = await get_data(str(pic.data.get("url", "")))
                 if not _img:
                     return
                 success += 1
                 images.append(_img)
-            except Exception:
-                fail += 1
+            except Exception as e:
+                if _img:
+                    success += 1
+                    images.append(_img)
+                else:
+                    logger.warning(f"获取图片失败: {e}")
+                    fail += 1
+
+            # 处理消息中的图片
 
             msg: Message = event.dict()["message"]
             for msg_seg in msg:
@@ -66,7 +76,14 @@ async def _(event: MessageEvent, matcher: Matcher):
                         if not _img:
                             return
                         images.append(_img)
-                    except Exception:
+
+                    except Exception as e:
+                        if _img:
+                            success += 1
+                            images.append(_img)
+                        else:
+                            fail += 1
+                        logger.warning(f"获取图片失败: {e}")
                         fail += 1
 
             base = 0
