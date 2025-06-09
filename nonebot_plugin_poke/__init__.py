@@ -12,7 +12,7 @@ from nonebot.plugin.on import on_command, on_notice
 from .matcher import poke_reply
 from .utils import config, get_data, poke_rule
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description="自定义群聊戳一戳事件",

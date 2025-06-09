@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_poke"
-version = "0.1.4"
+dynamic = ["version"]
 description = "自定义群聊戳戳事件 plugin for NoneBot2"
 authors = ["Agnes_Digital <Z735803792@163.com>"]
 license = "MIT"
@@ -15,6 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
 include = [
@@ -22,7 +23,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 nonebot2 = "^2.1.0"
 nonebot-adapter-onebot = ">=2.1.5"
 aiofiles = "^23.1.0"
@@ -32,19 +33,24 @@ aiohttp = "^3.8.5"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.pdm.version]
+source = "file"
+path = "nonebot_plugin_poke/__init__.py"
+
+
 [tool.pyright]
-pythonVersion = "3.8"
+pythonVersion = "3.9"
 
 [tool.black]
 line-length = 89
-target-version = ["py39", "py310", "py311"]
+target-version = ["py39", "py310", "py311", "py312"]
 include = '\.pyi?$'
 # skip-string-normalization = true
 
 [tool.ruff.isort]
 extra-standard-library = ["typing_extensions"]
 
-[tool.ruff]
+[tool.ruff.lint]
 ignore = [
     "B008",
     "B905",
