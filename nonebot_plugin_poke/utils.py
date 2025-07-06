@@ -16,84 +16,54 @@ async def get_data(url: str):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0",
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers, timeout=600) as response:
-            if response.status == 200:
-                return await response.read()
-            return None
+    async with (
+        aiohttp.ClientSession() as session,
+        session.get(url, headers=headers, timeout=600) as response,
+    ):
+        if response.status == 200:
+            return await response.read()
+        return None
 
 
-async def acc_send(matcher: Matcher):
-    """语音部分"""
-    poke_file_path = config.poke_path
-    poke_file_path.joinpath("acc").mkdir(parents=True, exist_ok=True)
-    poke_acc_list = poke_file_path.joinpath("acc").iterdir()
-    acc_file_list: List[Path] = []
-    for acc_file in poke_acc_list:
-        if acc_file.is_file() and acc_file.suffix.lower() in [".wav", ".mp3", ".acc"]:
-            acc_file_list.append(acc_file)
-    send_acc = random.choice(acc_file_list)
-    print(f"选择{send_acc}")
-    await matcher.send(MessageSegment.record(file=f"file:///{send_acc.resolve()}"))
+class PokeSender:
+    def __init__(self):
+        self.poke_path = config.poke_path
+        self.bot_nickname = config.bot_nickname
 
+    async def poke_send(self, event: PokeNotifyEvent, matcher: Matcher):
+        if config.poke_send_poke:
+            await matcher.send(
+                Message([MessageSegment("poke", {"qq": f"{event.user_id}"})]),
+            )
 
-async def poke_send(event: PokeNotifyEvent, matcher: Matcher):
-    if config.poke_send_poke:
-        logger.success("反击戳戳")
-        await matcher.send(Message([MessageSegment("poke", {"qq": f"{event.user_id}"})]))
-    else:
-        return
+    async def pic_send(self):
+        pic_file_path = self.poke_path.joinpath("pic")
+        pic_file_path.mkdir(parents=True, exist_ok=True)
+        if config.poke_send_pic:
+            poke_pic_list = pic_file_path.iterdir()
+            pic_file_list = [
+                pic_file
+                for pic_file in poke_pic_list
+                if pic_file.is_file()
+                and pic_file.suffix.lower() in [".png", ".jpg", ".jpeg", ".webp", ".gif"]
+            ]
+            return random.choice(pic_file_list) if pic_file_list else None
+        return None
 
+    async def text_send(self):
+        pic_file_path = self.poke_path
 
-async def pic_send():
-    """发送图片和text"""
-    pic_file_path = config.poke_path
-    pic_file_path.joinpath("pic").mkdir(parents=True, exist_ok=True)
-    if config.poke_send_pic:
-        logger.success("发送图片")
-        poke_pic_list = pic_file_path.joinpath("pic").iterdir()
-        pic_file_list: List[Path] = []
-        for pic_file in poke_pic_list:
-            if pic_file.is_file() and pic_file.suffix.lower() in [
-                ".png",
-                ".jpg",
-                ".jpeg",
-                ".webp",
-                ".gif",
-            ]:
-                pic_file_list.append(pic_file)
-        send_pic = random.choice(pic_file_list)
-    else:
-        send_pic = None
-    return send_pic
-
-
-async def text_send():
-    logger.success("发送文字")
-    pic_file_path = config.poke_path
-
-    async def _get_random_text() -> str:
-        """
-        获取随机文本行
-        从poke.txt文件中随机选择一行文本，如果文件不存在则创建并初始化默认文本
-        参数：无
-        返回：随机选择的文本行（字符串）
-        """
-        if pic_file_path.joinpath("poke.txt").is_file():
-            async with aiofiles.open(
-                pic_file_path.joinpath("poke.txt"),
-                mode="r",
-                encoding="utf-8",
-            ) as f:
-                text_file_list: List[str] = (await f.read()).split("\n")
-                send_text = random.choice(text_file_list)
-        else:
-            async with aiofiles.open(
-                pic_file_path.joinpath("poke.txt"),
-                mode="w",
-                encoding="utf-8",
-            ) as f:
-                text_file_list2: List[str] = [
+        async def _get_random_text() -> str:
+            if pic_file_path.joinpath("poke.txt").is_file():
+                async with aiofiles.open(
+                    pic_file_path.joinpath("poke.txt"),
+                    mode="r",
+                    encoding="utf-8",
+                ) as f:
+                    text_file_list = (await f.read()).split("\n")
+                    send_text = random.choice(text_file_list)
+            else:
+                default_texts = [
                     "lsp你再戳？",
                     "连个可爱美少女都要戳的肥宅真恶心啊。",
                     "你再戳！",
@@ -116,38 +86,55 @@ async def text_send():
                     "啊呜，太舒服刚刚竟然睡着了。什么事？",
                     "正在定位您的真实地址...定位成功。轰炸机已起飞",
                 ]
-                await f.write("\n".join(text_file_list2))
-                send_text = random.choice(text_file_list2)
-        return send_text
+                async with aiofiles.open(
+                    pic_file_path.joinpath("poke.txt"),
+                    mode="w",
+                    encoding="utf-8",
+                ) as f:
+                    await f.write("\n".join(default_texts))
+                send_text = random.choice(default_texts)
+            return send_text
 
-    def _replace_pronoun(text: str) -> str:
-        """
-        替换文本中的代词
-        将文本中的"我"替换为机器人昵称
-        参数：
-            text: 待处理的原始文本
-        返回：处理后的文本
-        """
-        return text.replace("我", config.bot_nickname)
+        def _replace_pronoun(text: str) -> str:
+            return text.replace("我", self.bot_nickname)
 
-    send_text = await _get_random_text()
-    return _replace_pronoun(send_text)
+        send_text = await _get_random_text()
+        return _replace_pronoun(send_text)
 
+    async def acc_send(self, matcher: Matcher):
+        """语音部分"""
+        poke_file_path = config.poke_path
+        poke_file_path.joinpath("acc").mkdir(parents=True, exist_ok=True)
+        poke_acc_list = poke_file_path.joinpath("acc").iterdir()
+        acc_file_list: List[Path] = []
+        for acc_file in poke_acc_list:
+            if acc_file.is_file() and acc_file.suffix.lower() in [
+                ".wav",
+                ".mp3",
+                ".acc",
+            ]:
+                acc_file_list.append(acc_file)
+        send_acc = random.choice(acc_file_list)
+        logger.info(f"选择{send_acc}")
+        await matcher.send(MessageSegment.record(file=f"file:///{send_acc.resolve()}"))
 
-async def pic_or_text(
-    send_pic: Optional[Path],
-    send_text: Optional[str],
-    matcher: Matcher,
-):
-    if send_pic and send_text:
-        await matcher.send(
-            MessageSegment.image(file=f"file:///{send_pic.resolve()}") + send_text,
-        )
-    elif send_pic and not send_text:
-        await matcher.send(MessageSegment.image(file=f"file:///{send_pic.resolve()}"))
-    elif not send_pic and send_text:
-        await matcher.send(send_text)
-    return
+    async def pic_or_text(
+        self,
+        send_pic: Optional[Path],
+        send_text: Optional[str],
+        matcher: Matcher,
+    ):
+        if send_pic and send_text:
+            await matcher.send(
+                MessageSegment.image(file=f"file:///{send_pic.resolve()}") + send_text,
+            )
+        elif send_pic and not send_text:
+            await matcher.send(
+                MessageSegment.image(file=f"file:///{send_pic.resolve()}"),
+            )
+        elif not send_pic and send_text:
+            await matcher.send(send_text)
+        return
 
 
 async def poke_rule(event: PokeNotifyEvent):
@@ -162,6 +149,4 @@ async def poke_rule(event: PokeNotifyEvent):
     return False
 
 
-async def add_pic():
-    pic_file_path = config.poke_path.joinpath("pic")
-    pic_file_path.mkdir(parents=True, exist_ok=True)
+PS = PokeSender()
