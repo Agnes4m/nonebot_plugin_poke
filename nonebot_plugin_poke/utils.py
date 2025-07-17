@@ -1,6 +1,6 @@
 import random
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import aiofiles
 import aiohttp
@@ -27,7 +27,7 @@ async def get_data(url: str):
 
 class PokeSender:
     def __init__(self):
-        self.poke_path = config.poke_path
+        self.poke_path = config.get_poke_path()
         self.bot_nickname = config.bot_nickname
 
     async def poke_send(self, event: PokeNotifyEvent, matcher: Matcher):
@@ -103,10 +103,10 @@ class PokeSender:
 
     async def acc_send(self, matcher: Matcher):
         """语音部分"""
-        poke_file_path = config.poke_path
+        poke_file_path = config.get_poke_path()
         poke_file_path.joinpath("acc").mkdir(parents=True, exist_ok=True)
         poke_acc_list = poke_file_path.joinpath("acc").iterdir()
-        acc_file_list: List[Path] = []
+        acc_file_list: list[Path] = []
         for acc_file in poke_acc_list:
             if acc_file.is_file() and acc_file.suffix.lower() in [
                 ".wav",

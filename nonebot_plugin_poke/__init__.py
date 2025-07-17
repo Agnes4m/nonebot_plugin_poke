@@ -96,7 +96,7 @@ async def _(event: MessageEvent, matcher: Matcher):
                 for i, img_name in enumerate(images_name)
             ]
 
-            path = config.poke_path.joinpath("pic")
+            path = config.get_poke_path().joinpath("pic")
             for i, img in enumerate(images):
                 img_path = path / images_name[i]
                 with img_path.open("wb+") as f:
