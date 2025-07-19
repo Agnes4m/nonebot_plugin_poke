@@ -4,6 +4,7 @@ from typing import Optional
 
 import aiofiles
 import aiohttp
+from nonebot.adapters import Event
 from nonebot.adapters.onebot.v11 import Message, MessageSegment, PokeNotifyEvent
 from nonebot.log import logger
 from nonebot.matcher import Matcher
@@ -11,8 +12,10 @@ from nonebot.matcher import Matcher
 from .config import config
 
 
-async def get_data(url: str):
+async def get_data(url: str) -> Optional[bytes]:
     """获取url内容"""
+    if not url:
+        return None
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0",
     }
@@ -27,12 +30,12 @@ async def get_data(url: str):
 
 class PokeSender:
     def __init__(self):
-        self.poke_path = config.get_poke_path()
-        self.bot_nickname = config.bot_nickname
+        self.poke_path: Path = config.get_poke_path()
+        self.bot_nickname :str = config.bot_nickname
 
     async def poke_send(self, event: PokeNotifyEvent, matcher: Matcher):
         if config.poke_send_poke:
-            await matcher.send(
+            await matcher.send(  # pyright: ignore[reportUnknownMemberType]
                 Message([MessageSegment("poke", {"qq": f"{event.user_id}"})]),
             )
 
@@ -91,7 +94,7 @@ class PokeSender:
                     mode="w",
                     encoding="utf-8",
                 ) as f:
-                    await f.write("\n".join(default_texts))
+                    _ = await f.write("\n".join(default_texts))
                 send_text = random.choice(default_texts)
             return send_text
 
@@ -116,7 +119,7 @@ class PokeSender:
                 acc_file_list.append(acc_file)
         send_acc = random.choice(acc_file_list)
         logger.info(f"选择{send_acc}")
-        await matcher.send(MessageSegment.record(file=f"file:///{send_acc.resolve()}"))
+        await matcher.send(MessageSegment.record(file=f"file:///{send_acc.resolve()}"))  # pyright: ignore[reportUnknownMemberType]
 
     async def pic_or_text(
         self,
@@ -125,26 +128,26 @@ class PokeSender:
         matcher: Matcher,
     ):
         if send_pic and send_text:
-            await matcher.send(
+            await matcher.send(  # pyright: ignore[reportUnknownMemberType]
                 MessageSegment.image(file=f"file:///{send_pic.resolve()}") + send_text,
             )
         elif send_pic and not send_text:
-            await matcher.send(
+            await matcher.send(  # pyright: ignore[reportUnknownMemberType]
                 MessageSegment.image(file=f"file:///{send_pic.resolve()}"),
             )
         elif not send_pic and send_text:
-            await matcher.send(send_text)
+            await matcher.send(send_text)  # pyright: ignore[reportUnknownMemberType]
         return
 
 
-async def poke_rule(event: PokeNotifyEvent):
+async def poke_rule(event: Event):
     """黑白名单判断"""
     if isinstance(event, PokeNotifyEvent) and event.target_id == event.self_id:
         group = event.group_id
         return (
-            (group not in set(config.poke_ban_group))
+            (group not in set(config.poke_ban_group))  # pyright: ignore[reportUnnecessaryContains]
             if config.poke_black
-            else (group in set(config.poke_allow_group))
+            else (group in set(config.poke_allow_group))  # pyright: ignore[reportUnnecessaryContains]
         )
     return False
 

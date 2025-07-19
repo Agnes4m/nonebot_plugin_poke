@@ -25,7 +25,8 @@ async def poke_reply(event: PokeNotifyEvent, matcher: Matcher):
         return
 
 
-async def matcher_pic_text(matcher):
+async def matcher_pic_text(matcher: Matcher):
+
     if config.poke_send_pic and config.poke_send_text:
         await PS.pic_or_text(
             await PS.pic_send(),

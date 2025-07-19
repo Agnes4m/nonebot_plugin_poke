@@ -2,16 +2,14 @@
 name = "nonebot_plugin_poke"
 dynamic = ["version"]
 description = "自定义群聊戳戳事件 plugin for NoneBot2"
-authors = [
-    { name = "Agnes_Digital", email = "Z735803792@163.com" }
-]
+authors = [{ name = "Agnes_Digital", email = "Z735803792@163.com" }]
 requires-python = ">=3.9,<4.0"
 readme = "README.md"
 license = { text = "MIT" }
 
 homepage = "https://github.com/Agnes4m/nonebot_plugin_poke"
 repository = "https://github.com/Agnes4m/nonebot_plugin_poke"
-keywords = ["nonebot2", "plugin","poke"]
+keywords = ["nonebot2", "plugin", "poke"]
 
 classifiers = [
     "License :: OSI Approved :: MIT License",
@@ -24,9 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
-include = [
-    "LICENSE","README.md"
-]
+include = ["LICENSE", "README.md"]
 
 dependencies = [
     "nonebot2>=2.1.0",
@@ -53,7 +49,7 @@ pythonVersion = "3.9"
 
 [tool.black]
 line-length = 89
-target-version = ["py39", "py310", "py311","py312"]
+target-version = ["py39", "py310", "py311", "py312", "py313"]
 include = '\.pyi?$'
 # skip-string-normalization = true
 

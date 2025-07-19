@@ -19,7 +19,10 @@ class ConfigModel(BaseModel):
     poke_block: bool = True
 
     def get_poke_path(self) -> Path:
-        return Path(self.poke_path)
+        out_path = Path(self.poke_path)
+        if out_path.is_absolute():
+            return out_path
+        return Path("data/poke")
 
     class Config:
         extra: str = "ignore"
