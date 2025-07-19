@@ -69,13 +69,12 @@ async def _(event: MessageEvent, matcher: Matcher):
 
     # 处理消息中的图片
 
-    msg: Message[Any] = event.model_dump()[
-        "message"
-    ]  # pyright: ignore[reportAny, reportExplicitAny]
-    for msg_seg in msg:  # pyright: ignore[reportAny]
+    msg: Message[Any] = event.model_dump()["message"]
+    for msg_seg in msg:
         msg_seg = cast(
-            MessageSegment[Any], msg_seg
-        )  # pyright: ignore[reportExplicitAny]
+            MessageSegment[Any],
+            msg_seg,
+        )
 
         if msg_seg.type == "image":
             try:
@@ -109,5 +108,6 @@ async def _(event: MessageEvent, matcher: Matcher):
 
     tosend = f"添加完成，成功{success}张，失败{fail}张，可用于戳戳随机图"
     await matcher.send(
-        message=tosend, at_sender=True
-    )  # pyright: ignore[reportUnknownMemberType]
+        message=tosend,
+        at_sender=True,
+    )

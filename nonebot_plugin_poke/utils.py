@@ -19,9 +19,10 @@ async def get_data(url: str) -> Optional[bytes]:
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0",
     }
+    timeout = aiohttp.ClientTimeout(total=600)
     async with (
         aiohttp.ClientSession() as session,
-        session.get(url, headers=headers, timeout=600) as response,
+        session.get(url, headers=headers, timeout=timeout) as response,
     ):
         if response.status == 200:
             return await response.read()
@@ -35,7 +36,7 @@ class PokeSender:
 
     async def poke_send(self, event: PokeNotifyEvent, matcher: Matcher):
         if config.poke_send_poke:
-            await matcher.send(  # pyright: ignore[reportUnknownMemberType]
+            await matcher.send(
                 Message([MessageSegment("poke", {"qq": f"{event.user_id}"})]),
             )
 
@@ -120,8 +121,8 @@ class PokeSender:
         send_acc = random.choice(acc_file_list)
         logger.info(f"选择{send_acc}")
         await matcher.send(
-            MessageSegment.record(file=f"file:///{send_acc.resolve()}")
-        )  # pyright: ignore[reportUnknownMemberType]
+            MessageSegment.record(file=f"file:///{send_acc.resolve()}"),
+        )
 
     async def pic_or_text(
         self,
@@ -130,15 +131,15 @@ class PokeSender:
         matcher: Matcher,
     ):
         if send_pic and send_text:
-            await matcher.send(  # pyright: ignore[reportUnknownMemberType]
+            await matcher.send(
                 MessageSegment.image(file=f"file:///{send_pic.resolve()}") + send_text,
             )
         elif send_pic and not send_text:
-            await matcher.send(  # pyright: ignore[reportUnknownMemberType]
+            await matcher.send(
                 MessageSegment.image(file=f"file:///{send_pic.resolve()}"),
             )
         elif not send_pic and send_text:
-            await matcher.send(send_text)  # pyright: ignore[reportUnknownMemberType]
+            await matcher.send(send_text)
         return
 
 
@@ -147,13 +148,9 @@ async def poke_rule(event: Event):
     if isinstance(event, PokeNotifyEvent) and event.target_id == event.self_id:
         group = event.group_id
         return (
-            (
-                group not in set(config.poke_ban_group)
-            )  # pyright: ignore[reportUnnecessaryContains]
+            (group not in set(config.poke_ban_group))
             if config.poke_black
-            else (
-                group in set(config.poke_allow_group)
-            )  # pyright: ignore[reportUnnecessaryContains]
+            else (group in set(config.poke_allow_group))
         )
     return False
 

@@ -44,14 +44,24 @@ path = "nonebot_plugin_poke/__init__.py"
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[tool.pyright]
-pythonVersion = "3.9"
 
 [tool.black]
 line-length = 89
 target-version = ["py39", "py310", "py311", "py312", "py313"]
 include = '\.pyi?$'
 # skip-string-normalization = true
+
+[tool.basedpyright]
+pythonVersion = "3.9"
+defineConstant = { PYDANTIC_V2 = true }
+typeCheckingMode = "standard"
+reportShadowedImports = false
+exclude = ["**/node_modules", "**/.venv", "./nonebot_plugin_poke"]
+executionEnvironments = [
+    { root = "typings", reportIncompatibleMethodOverride = false, reportSelfClsParameterName = false },
+    { root = "." },
+]
+
 
 [tool.ruff.lint.isort]
 extra-standard-library = ["typing_extensions"]
