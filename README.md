@@ -7,51 +7,61 @@
 
 <div align="center">
 
-# nonebot_plugin_poke（仅支持onebotv11）
+# nonebot_plugin_poke（仅支持 onebotv11）
 
-_✨Nonebot & 自定义戳戳群聊事件✨_
+_✨Nonebot & 自定义戳戳群聊事件 ✨_
 
-<a href="https://github.com/Agnes4m/nonebot_plugin_poke/stargazers">
-        <img alt="GitHub stars" src="https://img.shields.io/github/stars/Agnes4m/nonebot_plugin_poke" alt="stars">
-</a>
-<a href="https://github.com/Agnes4m/nonebot_plugin_poke/issues">
-        <img alt="GitHub issues" src="https://img.shields.io/github/issues/Agnes4m/nonebot_plugin_poke" alt="issues">
-</a>
-<a href="https://jq.qq.com/?_wv=1027&k=HdjoCcAe">
-        <img src="https://img.shields.io/badge/QQ%E7%BE%A4-399365126-orange?style=flat-square" alt="QQ Chat Group">
-</a>
+<img src="https://img.shields.io/badge/python-3.9+-blue?logo=python&logoColor=edb641" alt="python">
+<a href ="LICENSE">
+<img src="https://img.shields.io/github/license/Agnes4m/nonebot_plugin_poke" alt="pokelogo">
+<img src="https://img.shields.io/badge/nonebot-2.1.0+-red.svg" alt="NoneBot">
+<a href="https://pypi.python.org/pypi/nonebot_plugin_l4d2_server">
+
 <a href="https://pypi.python.org/pypi/nonebot_plugin_poke">
         <img src="https://img.shields.io/pypi/v/nonebot_plugin_poke.svg" alt="pypi">
 </a>
-    <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python">
-    <img src="https://img.shields.io/badge/nonebot-2.0.0-red.svg" alt="NoneBot">
+</br>
+<a href="https://github.com/astral-sh/ruff">
+<img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="ruff">
+</a>
+<a href="https://github.com/psf/black">
+<img src="https://img.shields.io/badge/code%20style-black-000000.svg?logo=python&logoColor=edb641" alt="black">
+</a>
+<img src="https://img.shields.io/badge/alconna-0.58.3+-red.svg" alt="NoneBot">
 
+<a href="https://github.com/Agnes4m/nonebot_plugin_poke/issues">
+        <img alt="GitHub issues" src="https://img.shields.io/github/issues/Agnes4m/nonebot_plugin_poke" alt="issues">
+</a>
 </div>
 
 ## 注意事项
 
-**如果使用napcat，请将版本更新到1.6.6或者以上，否则这个功能用不了**
+**如果使用 napcat，请将版本更新到 1.6.6 或者以上，否则这个功能用不了**
 
 ## 安装
 
 方法一 （推荐）：
+
 ```bash
 nb plugin install nonebot_plugin_poke
 ```
 
 方法二：
+
 ```bash
 poetry add nonebot_plugin_poke
 pdm add nonebot_plugin_poke
 ```
 
 方法三：
+
 ```bash
 pip install nonebot_plugin_poke
 ```
-再手动添加`nonebot_plugin_poke`到bot文件下`pyproject.toml`文件中
 
-## env配置项:
+再手动添加`nonebot_plugin_poke`到 bot 文件下`pyproject.toml`文件中
+
+## env 配置项:
 
     # 在完全不写的情况下，效果是戳戳后反戳戳
     # 机器人名称
@@ -82,7 +92,7 @@ pip install nonebot_plugin_poke
 
 ## 指令
 
-群里双击bot头像，会依次按照配置文件，逐步检查回复
+群里双击 bot 头像，会依次按照配置文件，逐步检查回复
 
 ## 数据结构
 
@@ -105,8 +115,9 @@ pip install nonebot_plugin_poke
 
 ## 其他
 
-- 如果发不出语音，请手动安装ffmpeg
-- 当语音，与图或文都为True的时候，则随机发送一种，防止刷屏刷到风控
+- 如果发不出语音，请手动安装 ffmpeg, deb 类系统请使用`sudo apt install ffmpeg`，rpm 类系统请使用`sudo yum install ffmpeg`
+
+- 当语音，与图或文都为 True 的时候，则随机发送一种，防止刷屏刷到风控
 
 ## 参考
 

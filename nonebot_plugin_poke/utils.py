@@ -31,7 +31,7 @@ async def get_data(url: str) -> Optional[bytes]:
 class PokeSender:
     def __init__(self):
         self.poke_path: Path = config.get_poke_path()
-        self.bot_nickname :str = config.bot_nickname
+        self.bot_nickname: str = config.bot_nickname
 
     async def poke_send(self, event: PokeNotifyEvent, matcher: Matcher):
         if config.poke_send_poke:
@@ -119,7 +119,9 @@ class PokeSender:
                 acc_file_list.append(acc_file)
         send_acc = random.choice(acc_file_list)
         logger.info(f"选择{send_acc}")
-        await matcher.send(MessageSegment.record(file=f"file:///{send_acc.resolve()}"))  # pyright: ignore[reportUnknownMemberType]
+        await matcher.send(
+            MessageSegment.record(file=f"file:///{send_acc.resolve()}")
+        )  # pyright: ignore[reportUnknownMemberType]
 
     async def pic_or_text(
         self,
@@ -145,9 +147,13 @@ async def poke_rule(event: Event):
     if isinstance(event, PokeNotifyEvent) and event.target_id == event.self_id:
         group = event.group_id
         return (
-            (group not in set(config.poke_ban_group))  # pyright: ignore[reportUnnecessaryContains]
+            (
+                group not in set(config.poke_ban_group)
+            )  # pyright: ignore[reportUnnecessaryContains]
             if config.poke_black
-            else (group in set(config.poke_allow_group))  # pyright: ignore[reportUnnecessaryContains]
+            else (
+                group in set(config.poke_allow_group)
+            )  # pyright: ignore[reportUnnecessaryContains]
         )
     return False
 
