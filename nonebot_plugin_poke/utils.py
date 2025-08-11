@@ -1,6 +1,5 @@
 import random
 from pathlib import Path
-from typing import Optional
 
 import aiofiles
 import aiohttp
@@ -12,7 +11,7 @@ from nonebot.matcher import Matcher
 from .config import config
 
 
-async def get_data(url: str) -> Optional[bytes]:
+async def get_data(url: str) -> bytes | None:
     """获取url内容"""
     if not url:
         return None
@@ -61,7 +60,6 @@ class PokeSender:
             if pic_file_path.joinpath("poke.txt").is_file():
                 async with aiofiles.open(
                     pic_file_path.joinpath("poke.txt"),
-                    mode="r",
                     encoding="utf-8",
                 ) as f:
                     text_file_list = (await f.read()).split("\n")
@@ -110,14 +108,11 @@ class PokeSender:
         poke_file_path = config.get_poke_path()
         poke_file_path.joinpath("acc").mkdir(parents=True, exist_ok=True)
         poke_acc_list = poke_file_path.joinpath("acc").iterdir()
-        acc_file_list: list[Path] = []
-        for acc_file in poke_acc_list:
-            if acc_file.is_file() and acc_file.suffix.lower() in [
-                ".wav",
-                ".mp3",
-                ".acc",
-            ]:
-                acc_file_list.append(acc_file)
+        acc_file_list: list[Path] = [
+            acc_file
+            for acc_file in poke_acc_list
+            if acc_file.is_file() and acc_file.suffix.lower() in [".wav", ".mp3", ".acc"]
+        ]
         send_acc = random.choice(acc_file_list)
         logger.info(f"选择{send_acc}")
         await matcher.send(
@@ -126,8 +121,8 @@ class PokeSender:
 
     async def pic_or_text(
         self,
-        send_pic: Optional[Path],
-        send_text: Optional[str],
+        send_pic: Path | None,
+        send_text: str | None,
         matcher: Matcher,
     ):
         if send_pic and send_text:
@@ -140,7 +135,6 @@ class PokeSender:
             )
         elif not send_pic and send_text:
             await matcher.send(send_text)
-        return
 
 
 async def poke_rule(event: Event):

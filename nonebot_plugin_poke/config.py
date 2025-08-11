@@ -11,8 +11,8 @@ class ConfigModel(BaseModel):
     poke_ban_group: list[str] = []
     poke_allow_group: list[str] = []
     poke_send_pic: bool = False
-    poke_send_poke: bool = True
-    poke_send_text: bool = False
+    poke_send_poke: bool = False
+    poke_send_text: bool = True
     poke_send_acc: bool = False
     poke_path: str = "data/poke"
     poke_priority: int = 1

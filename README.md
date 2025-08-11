@@ -38,6 +38,8 @@ _✨Nonebot & 自定义戳戳群聊事件 ✨_
 
 **如果使用 napcat，请将版本更新到 1.6.6 或者以上，否则这个功能用不了**
 
+**如果使用非gocq，则暂时无法使用反戳戳的回复**
+
 ## 安装
 
 方法一 （推荐）：
@@ -63,32 +65,32 @@ pip install nonebot_plugin_poke
 
 ## env 配置项:
 
-    # 在完全不写的情况下，效果是戳戳后反戳戳
+    # 在完全不写的情况下，效果是戳戳后回复文字
     # 机器人名称
-    bot_nickname: str = '宁宁'
+    bot_nickname = '宁宁'
     # 是否回复图片
-    poke_send_pic: bool = False
-    # 是否回复戳戳
-    poke_send_poke: bool = True
+    poke_send_pic = False
+    # 是否回复戳戳 (接口失效)
+    # poke_send_poke = False
     # 是否回复文字
-    poke_send_text: bool = False
+    poke_send_text = True
     # 是否回复音频
-    poke_send_acc: bool = False
+    poke_send_acc = False
 
 如果不知道以下配置，默认就可以，只修改上面部分
 
     # poke文件夹位置
-    poke_path:Path = Path('data/poke')
+    poke_path = 'data/poke'
     # 是否开启黑名单模式（否则是白名单）
-    poke_black: bool = True
+    poke_black = True
     # 黑名单屏蔽群组
-    poke_ban_group:List[str] = []
+    poke_ban_group = []
     # 白名单允许群组
-    poke_allow_group:List[str] = []
+    poke_allow_group = []
     # 戳戳优先级
-    poke_priority:int = 1
+    poke_priority = 1
     # 是否阻断其他指令
-    poke_block:bool = True
+    poke_block = True
 
 ## 指令
 

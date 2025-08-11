@@ -13,7 +13,7 @@ from .config import config
 from .matcher import poke_reply
 from .utils import get_data, poke_rule
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description="自定义群聊戳一戳事件",
@@ -72,14 +72,14 @@ async def _(event: MessageEvent, matcher: Matcher):
     msg: Message[Any] = event.model_dump()["message"]
     for msg_seg in msg:
         msg_seg = cast(
-            MessageSegment[Any],
+            "MessageSegment[Any]",
             msg_seg,
         )
 
         if msg_seg.type == "image":
             try:
                 data = msg_seg.data
-                str_data: str = cast(str, data.get("url", ""))
+                str_data: str = cast("str", data.get("url", ""))
                 img_data = await get_data(str_data)
                 if img_data:
                     success += 1
@@ -93,7 +93,7 @@ async def _(event: MessageEvent, matcher: Matcher):
         if not images:
             return
 
-    timestamp = int(datetime.now().timestamp())
+    timestamp = int(datetime.now(datetime.UTC).timestamp())
     images_name = [
         f"{timestamp + i}.{imghdr.what(None, h=img)}" for i, img in enumerate(images)
     ]
@@ -111,3 +111,4 @@ async def _(event: MessageEvent, matcher: Matcher):
         message=tosend,
         at_sender=True,
     )
+
