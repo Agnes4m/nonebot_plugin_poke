@@ -11,29 +11,27 @@ async def poke_reply(event: PokeNotifyEvent, matcher: Matcher):
     if config.poke_send_poke:
         await PS.poke_send(event, matcher)
 
-    if config.poke_send_acc and (config.poke_send_pic or config.poke_send_text):
-        roll = random.random()
-        if roll > 0.5:
+    send_acc = config.poke_send_acc
+    send_pic_or_text = config.poke_send_pic or config.poke_send_text
+
+    if send_acc and send_pic_or_text:
+        if random.random() > 0.5:
             await PS.acc_send(matcher)
         else:
             await matcher_pic_text(matcher)
-    elif config.poke_send_acc and not (config.poke_send_pic or config.poke_send_text):
+    elif send_acc:
         await PS.acc_send(matcher)
-    elif not config.poke_send_acc and (config.poke_send_pic or config.poke_send_text):
+    elif send_pic_or_text:
         await matcher_pic_text(matcher)
-    else:
-        return
 
 
 async def matcher_pic_text(matcher: Matcher):
+    send_pic = config.poke_send_pic
+    send_text = config.poke_send_text
 
-    if config.poke_send_pic and config.poke_send_text:
-        await PS.pic_or_text(
-            await PS.pic_send(),
-            await PS.text_send(),
-            matcher,
-        )
-    elif config.poke_send_pic and not config.poke_send_text:
+    if send_pic and send_text:
+        await PS.pic_or_text(await PS.pic_send(), await PS.text_send(), matcher)
+    elif send_pic:
         await PS.pic_or_text(await PS.pic_send(), None, matcher)
-    elif not config.poke_send_pic and config.poke_send_text:
+    elif send_text:
         await PS.pic_or_text(None, await PS.text_send(), matcher)

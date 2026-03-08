@@ -27,7 +27,6 @@ _✨Nonebot & 自定义戳戳群聊事件 ✨_
 <a href="https://github.com/psf/black">
 <img src="https://img.shields.io/badge/code%20style-black-000000.svg?logo=python&logoColor=edb641" alt="black">
 </a>
-<img src="https://img.shields.io/badge/alconna-0.58.3+-red.svg" alt="NoneBot">
 
 <a href="https://github.com/Agnes4m/nonebot_plugin_poke/issues">
         <img alt="GitHub issues" src="https://img.shields.io/github/issues/Agnes4m/nonebot_plugin_poke" alt="issues">

@@ -1,19 +1,19 @@
-import imghdr
-from datetime import datetime
-from typing import Any, cast
+from datetime import datetime, timezone
+from io import BytesIO
+from typing import Optional
 
-from nonebot.adapters import Message, MessageSegment
 from nonebot.adapters.onebot.v11 import MessageEvent, PokeNotifyEvent
 from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.plugin import PluginMetadata
 from nonebot.plugin.on import on_command, on_notice
+from PIL import Image
 
 from .config import config
 from .matcher import poke_reply
 from .utils import get_data, poke_rule
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description="自定义群聊戳一戳事件",
@@ -27,8 +27,11 @@ __plugin_meta__ = PluginMetadata(
     },
 )
 
-
-poke_ = on_notice(block=config.poke_block, priority=config.poke_priority, rule=poke_rule)
+poke_ = on_notice(
+    block=config.poke_block,
+    priority=config.poke_priority,
+    rule=poke_rule,
+)
 
 
 @poke_.handle()
@@ -43,71 +46,47 @@ add_pic = on_command("zq", aliases={"抓图"}, priority=30)
 @add_pic.handle()
 async def _(event: MessageEvent, matcher: Matcher):
     images: list[bytes] = []
-    images_name: list[str] = []
+    success = fail = 0
 
-    success: int = 0
-    fail: int = 0
+    async def fetch_image(url: Optional[str]) -> bool:
+        nonlocal success, fail
+        if url is None:
+            fail += 1
+            return False
+        try:
+            img_data = await get_data(url)
+            if img_data:
+                success += 1
+                images.append(img_data)
+                return True
+            fail += 1
+        except Exception as e:
+            logger.warning(f"获取图片失败：{e}")
+            fail += 1
+        return False
 
-    # 处理回复消息中的图片
     if event.reply:
         for pic in event.reply.message["image"]:
-            try:
-                url = (
-                    pic.data["url"]
-                    if hasattr(pic, "data") and "url" in pic.data
-                    else str(pic)
-                )
-                img_data = await get_data(url)
-                if img_data:
-                    success += 1
-                    images.append(img_data)
-                else:
-                    fail += 1
-            except Exception as e:
-                logger.warning(f"获取图片失败: {e}")
-                fail += 1
+            url = pic.data.get("url") if hasattr(pic, "data") else str(pic)
+            await fetch_image(url)
 
-    # 处理消息中的图片
-
-    msg: Message[Any] = event.model_dump()["message"]
-    for msg_seg in msg:
-        msg_seg = cast(
-            "MessageSegment[Any]",
-            msg_seg,
-        )
-
+    for msg_seg in event.message:
         if msg_seg.type == "image":
-            try:
-                data = msg_seg.data
-                str_data: str = cast("str", data.get("url", ""))
-                img_data = await get_data(str_data)
-                if img_data:
-                    success += 1
-                    images.append(img_data)
-                else:
-                    fail += 1
-            except Exception as e:
-                logger.warning(f"获取图片失败: {e}")
-                fail += 1
+            await fetch_image(msg_seg.data.get("url"))
 
-        if not images:
-            return
+    if not images:
+        return
 
-    timestamp = int(datetime.now(datetime.UTC).timestamp())
-    images_name = [
-        f"{timestamp + i}.{imghdr.what(None, h=img)}" for i, img in enumerate(images)
-    ]
-
+    timestamp = int(datetime.now(timezone.utc).timestamp())
     path = config.get_poke_path().joinpath("pic")
     path.mkdir(parents=True, exist_ok=True)
 
-    for img, name in zip(images, images_name):
-        img_path = path / name
-        with img_path.open("wb") as f:
-            _ = f.write(img)
+    for i, img in enumerate(images):
+        img_type = (Image.open(BytesIO(img)).format or "png").lower()
+        img_path = path / f"{timestamp + i}.{img_type}"
+        img_path.write_bytes(img)
 
-    tosend = f"添加完成，成功{success}张，失败{fail}张，可用于戳戳随机图"
     await matcher.send(
-        message=tosend,
+        f"添加完成，成功{success}张，失败{fail}张，可用于戳戳随机图",
         at_sender=True,
     )

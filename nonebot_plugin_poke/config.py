@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 
 class ConfigModel(BaseModel):
-
     bot_nickname: str = "宁宁"
     poke_black: bool = True
     poke_ban_group: list[str] = []
@@ -19,16 +18,14 @@ class ConfigModel(BaseModel):
     poke_block: bool = True
 
     def get_poke_path(self) -> Path:
-        out_path = Path(self.poke_path)
-        if out_path.is_absolute():
-            return out_path
-        return Path("data/poke")
+        path = Path(self.poke_path)
+        return path if path.is_absolute() else Path("data/poke")
 
     class Config:
-        extra: str = "ignore"
+        extra = "ignore"
 
 
 config = get_plugin_config(ConfigModel)
-# 初始化
-Path(config.get_poke_path()).joinpath("pic").mkdir(parents=True, exist_ok=True)
-Path(config.get_poke_path()).joinpath("acc").mkdir(parents=True, exist_ok=True)
+
+config.get_poke_path().joinpath("pic").mkdir(parents=True, exist_ok=True)
+config.get_poke_path().joinpath("acc").mkdir(parents=True, exist_ok=True)
