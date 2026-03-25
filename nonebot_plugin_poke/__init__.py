@@ -13,7 +13,7 @@ from .config import config
 from .matcher import poke_reply
 from .utils import get_data, poke_rule
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 __plugin_meta__ = PluginMetadata(
     name="戳一戳事件",
     description="自定义群聊戳一戳事件",
