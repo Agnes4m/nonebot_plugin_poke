@@ -19,7 +19,7 @@ class ConfigModel(BaseModel):
 
     def get_poke_path(self) -> Path:
         path = Path(self.poke_path)
-        return path if path.is_absolute() else Path("data/poke")
+        return path if path.is_absolute() else path
 
     class Config:
         extra = "ignore"

@@ -88,7 +88,7 @@ class PokeSender:
         acc_file_list = [
             f
             for f in acc_path.iterdir()
-            if f.is_file() and f.suffix.lower() in {".wav", ".mp3", ".acc"}
+            if f.is_file() and f.suffix.lower() in {".wav", ".mp3", ".aac", ".acc"}
         ]
         if not acc_file_list:
             return
@@ -121,6 +121,9 @@ async def poke_rule(event: Event):
         group = event.group_id
         if config.poke_black:
             return group not in set(config.poke_ban_group)
+        # 白名单模式：如果白名单为空，则允许所有群
+        if not config.poke_allow_group:
+            return True
         return group in set(config.poke_allow_group)
     return False
 
